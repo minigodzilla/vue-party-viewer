@@ -19,9 +19,8 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method === 'GET') {
 
-	$sql = "SELECT * FROM tbl_image WHERE 1";
+	$sql = "SELECT * FROM photos";
 	$stmt = $conn->prepare($sql); 
-	$stmt->bind_param("s", $id);
 	$stmt->execute();
 
 	$dbdata = array();
@@ -49,7 +48,10 @@ else if ($method === 'POST') {
 	$fileName  =  $_FILES['sendimage']['name'];
 	$tempPath  =  $_FILES['sendimage']['tmp_name'];
 	$fileSize  =  $_FILES['sendimage']['size'];
-			
+
+	$orientation  =  $_POST['orientation'];
+	$userID  =  $_POST['userID'];
+	
 	if(empty($fileName))
 	{
 		$errorMSG = json_encode(array("message" => "please select image", "status" => false));	
@@ -95,8 +97,8 @@ else if ($method === 'POST') {
 	// if no error caused, continue ....
 	if(!isset($errorMSG))
 	{
-		$query = mysqli_query($conn,'INSERT into tbl_image (name) VALUES("'.$fileName.'")');
-				
+		$query = mysqli_query($conn,'INSERT into photos (name, orientation, userID) VALUES ("'.$fileName.'","'.$orientation.'","'.$userID.'")');
+
 		echo json_encode(array("message" => "Image Uploaded Successfully", "status" => true));	
 	}
 }
